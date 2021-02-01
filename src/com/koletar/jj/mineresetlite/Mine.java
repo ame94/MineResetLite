@@ -2,6 +2,7 @@ package com.koletar.jj.mineresetlite;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -74,7 +75,7 @@ public class Mine implements ConfigurationSerializable {
             Map<String, Double> sComposition = (Map<String, Double>) me.get("composition");
             composition = new HashMap<SerializableBlock, Double>();
             for (Map.Entry<String, Double> entry : sComposition.entrySet()) {
-                composition.put(new SerializableBlock(entry.getKey()), entry.getValue());
+                composition.put(new SerializableBlock(Material.matchMaterial(entry.getKey())), entry.getValue());
             }
         } catch (Throwable t) {
             throw new IllegalArgumentException("Error deserializing composition");
@@ -92,7 +93,7 @@ public class Mine implements ConfigurationSerializable {
         }
         if (me.containsKey("surface")) {
             if (!me.get("surface").equals("")) {
-                surface = new SerializableBlock((String) me.get("surface"));
+                surface = new SerializableBlock(Material.matchMaterial((String)me.get("surface")));
             }
         }
         if (me.containsKey("fillMode")) {
@@ -237,15 +238,16 @@ public class Mine implements ConfigurationSerializable {
         for (int x = minX; x <= maxX; ++x) {
             for (int y = minY; y <= maxY; ++y) {
                 for (int z = minZ; z <= maxZ; ++z) {
-                    if (!fillMode || world.getBlockTypeIdAt(x, y, z) == 0) {
+                    if (!fillMode || world.getBlockAt(x, y, z).getType() != Material.AIR) {
                         if (y == maxY && surface != null) {
-                            world.getBlockAt(x, y, z).setTypeIdAndData(surface.getBlockId(), surface.getData(), false);
+                            world.getBlockAt(x, y, z).setType(Material.matchMaterial(surface.getMaterialName()));
                             continue;
                         }
                         double r = rand.nextDouble();
                         for (CompositionEntry ce : probabilityMap) {
                             if (r <= ce.getChance()) {
-                                world.getBlockAt(x, y, z).setTypeIdAndData(ce.getBlock().getBlockId(), ce.getBlock().getData(), false);
+                                Material selectedMat = ce.getBlock().getMat();
+                                world.getBlockAt(x, y, z).setType(selectedMat);
                                 break;
                             }
                         }
@@ -304,7 +306,7 @@ public class Mine implements ConfigurationSerializable {
         }
         //Pad the remaining percentages with air
         if (max < 1) {
-            composition.put(new SerializableBlock(0), 1 - max);
+            composition.put(new SerializableBlock(Material.AIR), 1 - max);
             max = 1;
         }
         double i = 0;

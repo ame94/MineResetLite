@@ -54,7 +54,15 @@ public class Phrases {
             format = getInstance().phrases.getString(key);
         }
         for (int i = 0; i < replacements.length; i++) {
-            format = format.replace("%" + i + "%", findName(replacements[i]));
+            Object replaceElement = replacements[i];
+            if (replaceElement == null) {
+            } else {
+                String name = findName(replacements[i]);
+                if (name != null) {
+                    format = format.replace("%" + i + "%", findName(replacements[i]));
+                }
+
+            }
         }
         format = format.replace("&", "\u00A7").replace("\u00A7\u00A7", "&");
         return format;
@@ -68,7 +76,7 @@ public class Phrases {
         } else if (o instanceof World) {
             return ((World) o).getName();
         } else if (o instanceof SerializableBlock) {
-            return Material.getMaterial(((SerializableBlock) o).getBlockId()).toString() + (((SerializableBlock) o).getData() != 0 ? ":" + ((SerializableBlock) o).getData() : "");
+            return ((SerializableBlock) o).getMaterialName();
         } else if (o instanceof ConsoleCommandSender) {
             return phrase("console");
         } else if (o instanceof BlockCommandSender) {

@@ -1,48 +1,42 @@
 package com.koletar.jj.mineresetlite;
 
+import org.bukkit.Material;
+
 /**
  * @author jjkoletar
  */
 public class SerializableBlock {
-    private int blockId;
-    private byte data;
+    private Material mat;
+    private String matName;
 
-    public SerializableBlock(int blockId) {
-        this.blockId = blockId;
-        data = 0;
-    }
-
-    public SerializableBlock(int blockId, byte data) {
-        this.blockId = blockId;
-        this.data = data;
-    }
-
-    public SerializableBlock(String self) {
-        String[] bits = self.split(":");
-        if (bits.length != 2) {
-            throw new IllegalArgumentException("String form of SerializableBlock didn't have exactly 2 numbers");
-        }
-        try {
-            blockId = Integer.valueOf(bits[0]);
-            data = Byte.valueOf(bits[1]);
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException("Unable to convert id to integer and data to byte");
+    public SerializableBlock(Material material) throws NullPointerException {
+        mat = material;
+        if (material == null) {
+            throw new NullPointerException();
+        } else {
+            matName = mat.name();
         }
     }
 
-    public int getBlockId() {
-        return blockId;
-    }
-
-    public byte getData() {
-        return data;
+    public Material getMat() {
+        return mat;
     }
 
     public String toString() {
-        return blockId + ":" + data;
+        return mat.toString();
+    }
+
+    public String getMaterialName() {
+        return matName;
     }
 
     public boolean equals(Object o) {
-        return o instanceof SerializableBlock && (this.blockId == ((SerializableBlock) o).blockId && this.data == ((SerializableBlock) o).data);
+        if (o != null && o instanceof  SerializableBlock) {
+            SerializableBlock other = (SerializableBlock)o;
+            if (mat != null && other != null) {
+                return matName.equalsIgnoreCase(other.matName);
+            }
+        }
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 name: MineResetLite
-version: $version$
+version: 3.7a
+api-version: 1.13
 main: com.koletar.jj.mineresetlite.MineResetLite
 author: jjkoletar
 description: A lightweight solution for Mine management.

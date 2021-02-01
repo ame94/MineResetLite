@@ -21,9 +21,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import com.koletar.jj.mineresetlite.org.mcstats.Metrics;
 import org.bukkit.scheduler.BukkitTask;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -142,6 +139,7 @@ public class MineResetLite extends JavaPlugin {
             }
         }, 60 * 20L, 60 * 20L);
         //Check for updates
+        /*
         if (!getDescription().getVersion().contains("dev")) {
             updateTask = getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
                 public void run() {
@@ -149,11 +147,15 @@ public class MineResetLite extends JavaPlugin {
                 }
             }, 20 * 15);
         }
-        getServer().getPluginManager().registerEvents(new UpdateWarner(), this);
+         */
+        //getServer().getPluginManager().registerEvents(new UpdateWarner(), this);
+        // hardcode a version number in for now.
         logger.info("MineResetLite version " + getDescription().getVersion() + " enabled!");
     }
 
     private void checkUpdates() {
+        // Project is no longer maintained there.
+        /*
         try {
             URL updateFile = new URL("https://api.curseforge.com/servermods/files?projectIds=45520");
             URLConnection conn = updateFile.openConnection();
@@ -173,6 +175,7 @@ public class MineResetLite extends JavaPlugin {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+         */
     }
 
     public void onDisable() {
@@ -203,7 +206,7 @@ public class MineResetLite extends JavaPlugin {
         } else if (name.equalsIgnoreCase("coalore")) {
             return Material.COAL_ORE;
         } else if (name.equalsIgnoreCase("cake") || name.equalsIgnoreCase("cakeblock")) {
-            return Material.CAKE_BLOCK;
+            return Material.CAKE;
         } else if (name.equalsIgnoreCase("emeraldore")) {
             return Material.EMERALD_ORE;
         } else if (name.equalsIgnoreCase("emeraldblock")) {
@@ -216,6 +219,8 @@ public class MineResetLite extends JavaPlugin {
             return Material.SNOW_BLOCK;                                                   //Maybe I'll be proven wrong, but it helps 99% of admins.
         } else if (name.equalsIgnoreCase("redstoneore")) {
             return Material.REDSTONE_ORE;
+        } else if (name.toLowerCase().contains("ancient") || name.toLowerCase().contains("debris")) {
+            return Material.ANCIENT_DEBRIS;
         }
         return Material.matchMaterial(name);
     }
